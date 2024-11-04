@@ -60,7 +60,10 @@ export const sendMessage = async (req, res) => {
         // SOCKET.IO functionality to notify the receiver in real-time
         const receiverSocketId = getReceiverSocketId(receiverId);
         if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage", newMessage);
+            io.to(receiverSocketId).emit("newMessage", {
+                ...newMessage.toObject(),
+                message: message // Send decrypted message to frontend via socket
+            });
         }
 
         res.status(201).json(newMessage);
@@ -96,6 +99,7 @@ export const getMessage = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
 
 
 
