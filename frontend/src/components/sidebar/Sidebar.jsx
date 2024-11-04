@@ -18,11 +18,11 @@ const Sidebar = () => {
 export default Sidebar;
 
 
-// STARTER CODE
+// Backup
 
 // import Conversations from "./Conversations";
-// import LogoutButton from "../LogoutButton";
-// import SearchInput from "../SearchInput";
+// import LogoutButton from "./LogoutButton";
+// import SearchInput from "./SearchInput";
 
 
 // const Sidebar = () => {
@@ -38,4 +38,5 @@ export default Sidebar;
 // }
 
 // export default Sidebar;
+
 
