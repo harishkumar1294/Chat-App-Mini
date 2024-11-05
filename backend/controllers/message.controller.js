@@ -1,12 +1,19 @@
+
 import Conversation from '../models/conversation.model.js'
 import Message from '../models/message.model.js';
 import { getReceiverSocketId, io } from '../socket/socket.js';
+import { caesarEncrypt } from '../utils/encryption.js'
 
 export const sendMessage = async (req, res) => {
     try {
         const { message } = req.body;
         const { id: receiverId } = req.params;
         const senderId = req.user._id;
+
+        const shift = 3; // Define the shift for the Caesar cipher
+
+        // Encrypt the message using the Caesar cipher
+        const encryptedMessage = caesarEncrypt(message, shift);
 
         let conversation = await Conversation.findOne({
             participants: { $all: [senderId, receiverId] },
@@ -21,7 +28,7 @@ export const sendMessage = async (req, res) => {
         const newMessage = new Message({
             senderId,
             receiverId,
-            message,
+            encryptedMessage,
 
         });
 
@@ -65,7 +72,12 @@ export const getMessage = async (req, res) => {
 
         if(!conversation) return res.status(200).json([]);
 
-        const messages = conversation.messages;
+        const shift = 3; // Use the same shift as in encryption
+        // Decrypt each message in the conversation
+        const messages = conversation.messages.map(msg => {
+            const decryptedMessage = caesarDecrypt(msg.message, shift); // Decrypt the message
+            return { ...msg.toObject(), message: decryptedMessage }; // Return the decrypted message
+        });
 
         res.status(200).json(messages);
 
